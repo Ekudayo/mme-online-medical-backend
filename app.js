@@ -23,9 +23,9 @@ const port = process.env.PORT || 3000;
 // connect to  database
 connectToDatabase();
 
-// app.get("/", (req, res) => {
-//   res.send("Hello fine boy");
-// });
+app.get("/", (req, res) => {
+  res.send("Hello fine boy");
+});
 
 // user routes
 app.use("/api/v1/auth", userRoute);
