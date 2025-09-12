@@ -1,4 +1,5 @@
 // require("dotenv").config();
+dotenv.config();
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
@@ -7,7 +8,7 @@ import { connectToDatabase } from "./databaseConnection/connection.js";
 
 import userRoute from "./routes/user.route.js";
 
-dotenv.config();
+
 
 console.log(process.env.JWT_SECRET);
 // middleware parsing
