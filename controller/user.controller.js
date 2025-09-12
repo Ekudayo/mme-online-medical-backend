@@ -1,52 +1,10 @@
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import User from "../model/User.js";
+// require("dotenv").config(); 
 
-// user crud functionality
-//
 
-//
-// register end point
-// import bcrypt from "bcrypt"; // Make sure you import bcrypt
 
-// export const registerUser = async (req, res) => {
-//   try {
-//     const { firstname, lastname, email, password, role } = req.body;
-
-//     // 1. Check if the user already exists first (This is more efficient)
-//     const existingUser = await User.findOne({ email });
-//     if (existingUser) {
-//       return res.status(400).json({ message: "User already exists" });
-//     }
-
-//     // 2. Hash the password
-//     //    bcrypt.hash() generates a salt and hashes the password in one step.
-//     const saltRounds = 10;
-//     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-//     // 3. Create the new user object with the hashed password
-//     const newUser = new User({
-//       firstname,
-//       lastname,
-//       email,
-//       password: hashedPassword, // Use the correct variable here
-//       role,
-//     });
-
-//     // 4. Save the user to the database
-//     const createdUser = await newUser.save();
-
-//     // 5. Return a successful response
-//     return res
-//       .status(201)
-//       .json({ message: "User successfully created", createdUser });
-//   } catch (error) {
-//     // 6. Handle any other errors
-//     res.status(500).json({
-//       error: error.message,
-//     });
-//   }
-// };
 export const registerUser = async (req, res) => {
   try {
     const { firstname, lastname, email, password, role } = req.body;
@@ -95,8 +53,9 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign(
       {
         id: user._id,
+        role: user.role,
       },
-      process.eventNames.JWT_SECRET
+      process.env.JWT_SECRET
     );
     // omit password
     const { password } = user._doc;

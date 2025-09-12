@@ -1,13 +1,15 @@
+// require("dotenv").config();
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
 import { connectToDatabase } from "./databaseConnection/connection.js";
-dotenv.config();
+
 import userRoute from "./routes/user.route.js";
 
+dotenv.config();
 
-
+console.log(process.env.JWT_SECRET);
 // middleware parsing
 const app = express();
 app.use(express.json());
