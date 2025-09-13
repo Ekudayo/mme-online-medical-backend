@@ -27,7 +27,7 @@ const port = process.env.PORT || 3000;
 connectToDatabase();
 
 app.get("/", (req, res) => {
-  res.send("Hello fine boy");
+  res.send("Hello this is MME Online Medical Center API");
 });
 
 // user routes

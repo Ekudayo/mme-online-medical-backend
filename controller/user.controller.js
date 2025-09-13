@@ -47,6 +47,7 @@ export const loginUser = async (req, res) => {
       req.body.password,
       user.password
     );
+
     if (!checkIsPassWordMatch)
       return res.status(401).json({ message: "Invalid user credentials" });
     // generate token
@@ -58,7 +59,7 @@ export const loginUser = async (req, res) => {
       process.env.JWT_SECRET
     );
     // omit password
-    const { password } = user._doc;
+    const { password, ...otherUserinfo } = user._doc;
     res.status(200).json({
       message: `${user.firstname} login successfully`,
       token,
@@ -86,13 +87,45 @@ export const getAllUsers = async (req, res) => {
 };
 
 // get a single user
+// export const getSingleUser = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const user = await User.findById(id).select("-password");
+//     if (!user) return res.status(404).json({ message: "User not found" });
+//   } catch (error) {
+//     res.status(500).json({
+//       error: error.message,
+//     });
+//   }
+// };
+// export const getSingleUser = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const user = await User.findById(id).select("-password");
+//     if (!user) return res.status(404).json({ message: "User not found" });
+//     res.status(200).json({
+//       message: "User fetched successfully",
+//       user,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       error: error.message,
+//     });
+//   }
+// };
 export const getSingleUser = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id).select("-password");
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    // Add this line to send the user data
+    res.status(200).json(user);
   } catch (error) {
-    ({ error: error.message });
+    res.status(500).json({
+      error: error.message,
+    });
   }
 };
 
