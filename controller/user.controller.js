@@ -4,7 +4,7 @@ import User from "../model/User.js";
 // require("dotenv").config(); 
 
 
-
+// user registration endpoint
 export const registerUser = async (req, res) => {
   try {
     const { firstname, lastname, email, password, role } = req.body;
@@ -20,7 +20,7 @@ export const registerUser = async (req, res) => {
       role,
     });
     const user = await User.findOne({ email });
-    if (user) return res.status(400).json({ message: "user already exist" });
+    if (user) return res.status(400).json({ error: "user already exist" });
     // console.log(user);
     const createdUser = await newUser.save();
     return res
@@ -39,7 +39,7 @@ export const loginUser = async (req, res) => {
     const { email } = req.body;
     // check if user exist
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ messge: "User does not exist" });
+    if (!user) return res.status(404).json({ error: "User does not exist" });
     // console.log(user);
 
     // check if password match
@@ -49,7 +49,7 @@ export const loginUser = async (req, res) => {
     );
 
     if (!checkIsPassWordMatch)
-      return res.status(401).json({ message: "Invalid user credentials" });
+      return res.status(401).json({ error: "Invalid user credentials" });
     // generate token
     const token = jwt.sign(
       {
@@ -86,33 +86,7 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// get a single user
-// export const getSingleUser = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const user = await User.findById(id).select("-password");
-//     if (!user) return res.status(404).json({ message: "User not found" });
-//   } catch (error) {
-//     res.status(500).json({
-//       error: error.message,
-//     });
-//   }
-// };
-// export const getSingleUser = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const user = await User.findById(id).select("-password");
-//     if (!user) return res.status(404).json({ message: "User not found" });
-//     res.status(200).json({
-//       message: "User fetched successfully",
-//       user,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       error: error.message,
-//     });
-//   }
-// };
+// get single user
 export const getSingleUser = async (req, res) => {
   try {
     const { id } = req.params;
