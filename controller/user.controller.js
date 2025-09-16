@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../model/User.js";
+import cryto from "crypto";
 // require("dotenv").config(); 
 
 
@@ -71,6 +72,76 @@ export const loginUser = async (req, res) => {
     });
   }
 };
+
+// forgot password
+// export const forgotPassword = async (req, res) => {
+//   try {
+//     const { email } = req.body;
+//     // check if user exist
+//     const user = await User.findOne({ email });
+//     if (!user) return res.status(404).json({ error: "User does not exist" });
+
+//     // generate reset token
+//     const resetToken = crypto.randomBytes(32).toString("hex");
+//     user.resetToken = resetToken;
+//     await user.save();
+
+//     // send email with reset link
+//     const resetLink = `${req.protocol}://${req.get("host")}/api/auth/reset-password/${resetToken}`;
+//     await sendEmail({
+//       to: email,
+//       subject: "Password Reset",
+//       html: `<p>Click <a href="${resetLink}">here</a> to reset your password</p>`,
+//     });
+
+//     res.status(200).json({
+//       message: "Password reset link sent to your email",
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       error: error.message,
+//     });
+//   }
+// }
+
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digits
+    user.otp = otp;
+    user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+    await user.save();
+
+    // Send OTP via email (configure transporter)
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: process.env.SMTP_SECURE,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset OTP",
+      text: `Your OTP is ${otp}. It will expire in 10 minutes.`,
+    });
+
+    res.status(200).json({ message: "OTP sent to email" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // get all user
 export const getAllUsers = async (req, res) => {
   try {

@@ -10,6 +10,8 @@ import userRoute from "./routes/user.route.js";
 
 
 
+
+
 console.log(process.env.JWT_SECRET);
 // middleware parsing
 const app = express();
@@ -39,3 +41,5 @@ app.use("/api/v1/auth", userRoute);
 app.listen(port, (req, res) => {
   console.log(`server running on localhost:${port}`);
 });
+
+
