@@ -40,13 +40,15 @@ router.get("/auth/forgot-password", (req, res) => {
   res.status(200).send("Forgot Password Page Loaded");
 });
 
-// register route/endpoint
-router.post("/auth/forgot-password", forgotPassword);
-router.post("/create-user", registerUser);
-router.post("/login", loginUser);
-router.get("/allUsers", getAllUsers);
-router.get("/:id", getSingleUser);
-router.put("/updateUser/:id", updateUserById);
-router.delete("/deleteUser/:id", deleteUserById);
+        // register route/endpoint
+
+        // Place all static routes before dynamic :id route
+        router.post("/forgot-password", forgotPassword);
+        router.post("/create-user", registerUser);
+        router.post("/login", loginUser);
+        router.get("/allUsers", getAllUsers);
+        router.put("/updateUser/:id", updateUserById);
+        router.delete("/deleteUser/:id", deleteUserById);
+        router.get("/:id", getSingleUser);
 
 export default router;

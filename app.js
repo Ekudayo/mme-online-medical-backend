@@ -10,9 +10,6 @@ import userRoute from "./routes/user.route.js";
 
 
 
-
-
-console.log(process.env.JWT_SECRET);
 // middleware parsing
 const app = express();
 app.use(express.json());
@@ -23,7 +20,9 @@ app.use(morgan("dev"));
 // cors
 app.use(cors());
 
+
 const port = process.env.PORT || 3000;
+
 
 // connect to  database
 connectToDatabase();

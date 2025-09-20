@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../model/User.js";
-import cryto from "crypto";
-// require("dotenv").config(); 
+import nodemailer from "nodemailer";
+
 
 
 // user registration endpoint
@@ -74,37 +74,21 @@ export const loginUser = async (req, res) => {
 };
 
 // forgot password
-// export const forgotPassword = async (req, res) => {
-//   try {
-//     const { email } = req.body;
-//     // check if user exist
-//     const user = await User.findOne({ email });
-//     if (!user) return res.status(404).json({ error: "User does not exist" });
-
-//     // generate reset token
-//     const resetToken = crypto.randomBytes(32).toString("hex");
-//     user.resetToken = resetToken;
-//     await user.save();
-
-//     // send email with reset link
-//     const resetLink = `${req.protocol}://${req.get("host")}/api/auth/reset-password/${resetToken}`;
-//     await sendEmail({
-//       to: email,
-//       subject: "Password Reset",
-//       html: `<p>Click <a href="${resetLink}">here</a> to reset your password</p>`,
-//     });
-
-//     res.status(200).json({
-//       message: "Password reset link sent to your email",
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       error: error.message,
-//     });
-//   }
-// }
+export const forgotPasswordWithLink = async (req, res) => {try {
+  const {email} = req.body
+// check if user exist
+const user = await User.findOne({ email})
+if (!user) return res.status(404).json({error: "User not found"});
+// generate reset token
+const resetToken = jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:"15m"})
+// create reset link
+await sendEmail({to:email,subject:"Password Reset",text:`Click the link to reset your password: ${process.env.FRONTEND_URL}/reset-password/${resetToken}`})
+} catch (error) {
+  res.status(500).json({error: error.message});
+}}
 
 
+// forgot password with OTP
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
