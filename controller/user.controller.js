@@ -1,9 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import User from "../model/User.js";
+import User from "../models/User.js";
 import nodemailer from "nodemailer";
-
-
 
 // user registration endpoint
 export const registerUser = async (req, res) => {
@@ -74,19 +72,26 @@ export const loginUser = async (req, res) => {
 };
 
 // forgot password
-export const forgotPasswordWithLink = async (req, res) => {try {
-  const {email} = req.body
-// check if user exist
-const user = await User.findOne({ email})
-if (!user) return res.status(404).json({error: "User not found"});
-// generate reset token
-const resetToken = jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:"15m"})
-// create reset link
-await sendEmail({to:email,subject:"Password Reset",text:`Click the link to reset your password: ${process.env.FRONTEND_URL}/reset-password/${resetToken}`})
-} catch (error) {
-  res.status(500).json({error: error.message});
-}}
-
+export const forgotPasswordWithLink = async (req, res) => {
+  try {
+    const { email } = req.body;
+    // check if user exist
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    // generate reset token
+    const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "15m",
+    });
+    // create reset link
+    await sendEmail({
+      to: email,
+      subject: "Password Reset",
+      text: `Click the link to reset your password: ${process.env.FRONTEND_URL}/reset-password/${resetToken}`,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // forgot password with OTP
 export const forgotPassword = async (req, res) => {
@@ -192,10 +197,14 @@ export const updateUserById = async (req, res) => {
 // delete user
 export const deleteUserById = async (req, res) => {
   try {
-    const { id } = req.params;
+    // const { id } = req.params;
     // chech if user exist
-    const user = await User.findById(id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    // const user = await User.findById(id);
+    // if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
     await User.findByIdAndDelete(id);
     res.status(200).json({
@@ -205,5 +214,67 @@ export const deleteUserById = async (req, res) => {
     res.status(500).json({
       error: error.message,
     });
+  }
+};
+
+// create endpoint for imgage upload
+// export const uploadUserImage = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const file = req.file;
+
+//     if (!file) {
+//       return res.status(400).json({ error: "No file uploaded" });
+//     }
+
+//     const result = await uploadImageFile(file);
+//     res.status(200).json({
+//       message: "Image uploaded successfully",
+//       data: result,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       error: error.message,
+//     });
+//   }
+// };
+
+// create endpoint for imgage upload
+// export const uploadUserImage = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const file = req.file; // <-- The uploaded file should be here
+
+//     if (!file) {
+//       return res.status(400).json({ error: "No file uploaded" });
+//     }
+
+//     const result = await uploadImageFile(file); // <-- A required utility function
+//     res.status(200).json({
+//       message: "Image uploaded successfully",
+//       data: result,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       error: error.message,
+//     });
+//   }
+// };
+
+// Simplified uploadUserImage controller (if ID is not required)
+export const uploadUserImage = async (req, res) => {
+  try {
+    // ❌ Remove: const { id } = req.params;
+
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const result = await uploadImageFile(file); // Only pass the file
+    // ... rest of the logic
+  } catch (error) {
+    // ...
   }
 };

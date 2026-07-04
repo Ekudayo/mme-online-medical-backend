@@ -1,5 +1,6 @@
 // require("dotenv").config();
 dotenv.config();
+// import userRoute from "./routes/user.route.js";
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
@@ -7,8 +8,7 @@ import cors from "cors";
 import { connectToDatabase } from "./databaseConnection/connection.js";
 
 import userRoute from "./routes/user.route.js";
-
-
+// import appointmentRoute from "./routes/appointment.route.js";
 
 // middleware parsing
 const app = express();
@@ -20,9 +20,7 @@ app.use(morgan("dev"));
 // cors
 app.use(cors());
 
-
-const port = process.env.PORT || 3000;
-
+const port = process.env.PORT || 5000;
 
 // connect to  database
 connectToDatabase();
@@ -33,12 +31,9 @@ app.get("/", (req, res) => {
 
 // user routes
 app.use("/api/v1/auth", userRoute);
-
-
+// app.use("/api/v1/auth", appointmentRoute);
 
 
 app.listen(port, (req, res) => {
   console.log(`server running on localhost:${port}`);
 });
-
-
